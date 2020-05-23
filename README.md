@@ -1,7 +1,7 @@
 # IoT-Temperature
 A small project for a ESP826 microcontroller using MicroPython to check temperature and humidity
 
-## Steps:
+## Getting Started:
 
 - Mount ESP32 on the Breadboard
 - Erase ESP32 previous data: 
@@ -19,4 +19,16 @@ rshell --port <your_serial_port>
 And then to interact with it in real time:
 ```bash
 repl
+```
+- My ESP32 board only has one programmable LED (blue) on GPIO2.
+
+## Working with files:
+
+- List files and dirs on board, inside RShell:
+```bash
+ls /pyboard
+```
+- Copy file to board:
+```bash
+rshell --port <board serial port name> cp <py_file> /pyboard
 ```
