@@ -21,3 +21,19 @@ sta_if.connect('your SSID', 'your Wi-Fi password')
 sta_if.isconnected()
 # get connection parameters
 sta_if.ifconfig()
+
+# Setup WebREPL, a web-based REPL interface. This will open a dialog, in which you will setup the WebREPL: activate on boot, set a password and reboot.
+# To use the WebREPL after that, unzip the webrepl-master.zip folder and run the html file.
+import webrepl_setup
+
+# Using config file, we can connect using:
+sta_if.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
+
+# MicroPython comes preloaded with urequests, which is a simplified version of requests.
+import urequests
+# contact simple web service that tells you what is your public IP address
+r = urequests.get('http://icanhazip.com')
+# request code
+r.status_code
+# request data
+r.text
