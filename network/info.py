@@ -1,4 +1,5 @@
 import network
+import config
 
 # access point interface
 ap_if = network.WLAN(network.AP_IF)
@@ -28,12 +29,3 @@ import webrepl_setup
 
 # Using config file, we can connect using:
 sta_if.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
-
-# MicroPython comes preloaded with urequests, which is a simplified version of requests.
-import urequests
-# contact simple web service that tells you what is your public IP address
-r = urequests.get('http://icanhazip.com')
-# request code
-r.status_code
-# request data
-r.text

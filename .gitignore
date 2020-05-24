@@ -1,2 +1,3 @@
 venv
 network/webrepl-master/*
+network/config.py
