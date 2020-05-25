@@ -1,4 +1,4 @@
-# IoT-Temperature
+# IoT-MicroPython
 A small project for a ESP32 microcontroller using MicroPython to check temperature and humidity.
 
 I developed this project following the Miguel Grinberg's **MicroPython and the Internet of Things** tutorial (https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-i-welcome), and adapting it to the ESP32 board as the tutorial was written using an ESP8266.
