@@ -9,4 +9,7 @@ in ThingSpeak in order to register the sensor readings
 Constants definitio
 
 # wake_up
-Methods to wake up from deep sleep state using a timer for ESP8266 and ESP32 (the one I am using).
+Methods to wake up from deep sleep state using a timer for ESP8266 and ESP32 (the one I am using)
+
+# screen
+How to interact with the OLED screen

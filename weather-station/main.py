@@ -73,11 +73,34 @@ def deepsleep():
         seconds=config.LOG_INTERVAL))
     machine.deepsleep(config.LOG_INTERVAL * 1000)
 
+def display_temperature_and_humidity(temperature, humidity):
+    i2c = machine.I2C(scl=machine.Pin(config.DISPLAY_SCL_PIN),
+                      sda=machine.Pin(config.DISPLAY_SDA_PIN))
+    if 60 not in i2c.scan():
+        raise RuntimeError('Cannot find display.')
+
+    display = ssd1306.SSD1306_I2C(128, 64, i2c)
+    display.fill(0)
+
+    # '{:^16s}': centered in a field of 16 chars
+    display.text('{:^16s}'.format('Temperature:'), 0, 0)
+    display.text('{:^16s}'.format(str(temperature) + \
+        ('F' if config.FAHRENHEIT else 'C')), 0, 16)
+
+    display.text('{:^16s}'.format('Humidity:'), 0, 32)
+    display.text('{:^16s}'.format(str(humidity) + '%'), 0, 48)
+
+    # show for 10secs and then turn off
+    display.show()
+    time.sleep(10)
+    display.poweroff()
+
 def run():
     try:
         connect_wifi()
         temperature, humidity = get_temperature_and_humidity()
         log_data(temperature, humidity)
+        display_temperature_and_humidity(temperature, humidity)
     except Exception as exc:
         sys.print_exception(exc)
         show_error()
