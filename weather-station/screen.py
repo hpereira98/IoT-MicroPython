@@ -2,7 +2,10 @@ import machine
 import ssd1306
 
 # get data pins from LED screen
+# ESP32
 i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
+# ESP8266
+# i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 # scan LED to see if it is connected
 i2c.scan()
 

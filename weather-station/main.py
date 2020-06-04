@@ -1,4 +1,5 @@
 import dht
+import ssd1306
 import machine
 import config
 import urequests
@@ -74,12 +75,12 @@ def deepsleep():
     machine.deepsleep(config.LOG_INTERVAL * 1000)
 
 def display_temperature_and_humidity(temperature, humidity):
-    i2c = machine.I2C(scl=machine.Pin(config.DISPLAY_SCL_PIN),
-                      sda=machine.Pin(config.DISPLAY_SDA_PIN))
+    i2c = machine.I2C(-1, scl=machine.Pin(config.DISPLAY_SCL_PIN),
+                      sda=machine.Pin(config.DISPLAY_SDA_PIN), freq=40000)
     if 60 not in i2c.scan():
         raise RuntimeError('Cannot find display.')
 
-    display = ssd1306.SSD1306_I2C(128, 64, i2c)
+    display = ssd1306.SSD1306_I2C(config.OLED_WIDTH, config.OLED_HEIGHT, i2c)
     display.fill(0)
 
     # '{:^16s}': centered in a field of 16 chars
@@ -92,8 +93,8 @@ def display_temperature_and_humidity(temperature, humidity):
 
     # show for 10secs and then turn off
     display.show()
-    time.sleep(10)
-    display.poweroff()
+    # time.sleep(10)
+    # display.poweroff()
 
 def run():
     try:

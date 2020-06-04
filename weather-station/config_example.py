@@ -8,3 +8,7 @@ DHT11_PIN = 5
 FAHRENHEIT = False
 WEBHOOK_URL = 'https://api.thingspeak.com/update?api_key=<YOUR_KEY_HERE>&field1={temperature}&field2={humidity}'
 LOG_INTERVAL = 60
+DISPLAY_SCL_PIN = 22
+DISPLAY_SDA_PIN = 21
+OLED_WIDTH = 128
+OLED_HEIGHT = 64
