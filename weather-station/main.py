@@ -6,6 +6,9 @@ import urequests
 import sys
 import time
 import network
+import framebuf
+import writer
+import freesans20
 
 def get_temperature_and_humidity():
     # assign sensor to respective pin
@@ -74,24 +77,46 @@ def deepsleep():
         seconds=config.LOG_INTERVAL))
     machine.deepsleep(config.LOG_INTERVAL * 1000)
 
+def load_image(filename):
+    with open(filename, 'rb') as f:
+        f.readline()
+        f.readline()
+        width, height = [int(v) for v in f.readline().split()]
+        data = bytearray(f.read())
+    return framebuf.FrameBuffer(data, width, height, framebuf.MONO_HLSB)
+
 def display_temperature_and_humidity(temperature, humidity):
-    i2c = machine.I2C(-1, scl=machine.Pin(config.DISPLAY_SCL_PIN),
-                      sda=machine.Pin(config.DISPLAY_SDA_PIN), freq=40000)
+    i2c = machine.I2C(scl=machine.Pin(config.DISPLAY_SCL_PIN), sda=machine.Pin(config.DISPLAY_SDA_PIN))
     if 60 not in i2c.scan():
         raise RuntimeError('Cannot find display.')
 
-    display = ssd1306.SSD1306_I2C(config.OLED_WIDTH, config.OLED_HEIGHT, i2c)
+    display = ssd1306.SSD1306_I2C(128, 64, i2c)
+    font_writer = writer.Writer(display, freesans20)
+
+    temperature_pbm = load_image('temperature.pbm')
+    units_pbm = load_image('fahrenheit.pbm') if config.FAHRENHEIT \
+        else load_image('celsius.pbm')
+    humidity_pbm = load_image('humidity.pbm')
+    percent_pbm = load_image('percent.pbm')
+
     display.fill(0)
+    display.rect(0, 0, 128, 64, 1)
+    display.line(64, 0, 64, 64, 1)
+    display.blit(temperature_pbm, 24, 4)
+    display.blit(humidity_pbm, 88, 4)
+    display.blit(units_pbm, 28, 52)
+    display.blit(percent_pbm, 92, 52)
 
-    # '{:^16s}': centered in a field of 16 chars
-    display.text('{:^16s}'.format('Temperature:'), 0, 0)
-    display.text('{:^16s}'.format(str(temperature) + \
-        ('F' if config.FAHRENHEIT else 'C')), 0, 16)
+    text = '{:.1f}'.format(temperature)
+    textlen = font_writer.stringlen(text)
+    font_writer.set_textpos((64 - textlen) // 2, 30)
+    font_writer.printstring(text)
 
-    display.text('{:^16s}'.format('Humidity:'), 0, 32)
-    display.text('{:^16s}'.format(str(humidity) + '%'), 0, 48)
+    text = '{:.1f}'.format(humidity)
+    textlen = font_writer.stringlen(text)
+    font_writer.set_textpos(64 + (64 - textlen) // 2, 30)
+    font_writer.printstring(text)
 
-    # show for 10secs and then turn off
     display.show()
     # time.sleep(10)
     # display.poweroff()
